@@ -1,0 +1,15 @@
+{
+  "name": "astralmod-improved",
+  "version": "1.0.0",
+  "description": "An improved version of AstralMod 1.0",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alee, vicr123",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "opusscript": "0.0.6"
+  }
+}
