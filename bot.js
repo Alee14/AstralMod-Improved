@@ -1,7 +1,7 @@
 /****************************************
  * 
- *   AstralMod: Moderation bot for AstralPhaser Central and other Discord servers
- *   Copyright (C) 2017 Victor Tran and Rylan Arbour
+ *   AstralMod Improved: An improved version of AstralMod 1.0.
+ *   Copyright (C) 2018 Victor Tran, Rylan Arbour and AleeCorp
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  * 
  * *************************************/
 
-const amVersion = "1.1.1";
+const amVersion = "1.2.0 Beta";
 
 const Discord = require('discord.js');
 const api = require('./keys.js');
@@ -49,6 +49,13 @@ var actionMember = {};
 var actioningMember = {};
 var actionStage = {};
 var actionToPerform = {};
+
+var amGuild = "277922530973581312";
+var logChannel = "318874545593384970";
+var voiceChat = "261302767811952641";
+var suggestionChat = "427495678390960148";
+var jailRole = "";
+var interrogationRole = "";
 
 var dispatcher;
 var connection;
@@ -335,7 +342,7 @@ function handleSuggest(message) {
                     embed.setFooter("Submitted at " + new Date().toUTCString());
                     
                     var channel;
-                    if (state.guild == 277922530973581312) { //APHC
+                    if (state.guild == amGuild) { //APHC
                         channel = client.channels.get("308499752993947649");
                     } else if (state.guild == 297057036292849680) { //ALA
                         channel = client.channels.get("308547573382250497");
@@ -392,9 +399,9 @@ function handleAction(message) {
             message.channel.send(':gear: Cancelled. Exiting action menu.');
             member = null;
             actioningMember[message.guild.id] = null;
-        } else if ((msg.toLowerCase() == "interrogate" || msg.toLowerCase() == "i") && (message.guild.id == 277922530973581312 || message.guild.id == 287937616685301762 || message.guild.id == 305039436490735627)) {
-            if (message.guild.id == 277922530973581312) {
-                member.addRole(member.guild.roles.get("292630494254858241"));
+        } else if ((msg.toLowerCase() == "interrogate" || msg.toLowerCase() == "i") && (message.guild.id == amGuild || message.guild.id == 287937616685301762 || message.guild.id == 305039436490735627)) {
+            if (message.guild.id == amGuild) {
+                member.addRole(member.guild.roles.get(interrogationRole));
             } else if (message.guild.id == 287937616685301762) {
                 member.addRole(member.guild.roles.get("319847521440497666"));
             } else if (message.guild.id == 305039436490735627) {
@@ -404,9 +411,9 @@ function handleAction(message) {
             message.channel.send(':gear: ' + getUserString(member) + " has been placed in interrogation.");
             member = null;
             actioningMember[message.guild.id] = null;
-        } else if ((msg.toLowerCase() == "jail" || msg.toLowerCase() == "j") && (message.guild.id == 277922530973581312 || message.guild.id == 263368501928919040 || message.guild.id == 305039436490735627)) {
-            if (message.guild.id == 277922530973581312) {
-                member.addRole(member.guild.roles.get("277942939915780099"));
+        } else if ((msg.toLowerCase() == "jail" || msg.toLowerCase() == "j") && (message.guild.id == amGuild || message.guild.id == 263368501928919040 || message.guild.id == 305039436490735627)) {
+            if (message.guild.id == amGuild) {
+                member.addRole(member.guild.roles.get(jailRole));
             } else if (message.guild.id == 305039436490735627) {
                 member.addRole(member.guild.roles.get("310196007919157250"));
             } else {
@@ -416,9 +423,10 @@ function handleAction(message) {
             message.channel.send(':gear: ' + getUserString(member) + " has been placed in jail.");
             member = null;
             actioningMember[message.guild.id] = null;
-        } else if ((msg.toLowerCase() == "mute" || msg.toLowerCase() == "m") && (message.guild.id == 277922530973581312 || message.guild.id == 305039436490735627)) {
+            /*
+        } else if ((msg.toLowerCase() == "mute" || msg.toLowerCase() == "m") && (message.guild.id == amGuild || message.guild.id == 305039436490735627)) {
             var roleId;
-            if (message.guild.id == 277922530973581312) {
+            if (message.guild.id == amGuild) {
                 roleId = "294782894625390593";
             } else if (message.guild.id == 305039436490735627) {
                 roleId = "309883481024888842";
@@ -434,7 +442,7 @@ function handleAction(message) {
                 message.channel.send(':gear: ' + getUserString(member) + " has been placed on time out.");
                 member = null;
                 actioningMember[message.guild.id] = null;
-            }
+            } */
         } else if (msg.toLowerCase() == "kick" || msg.toLowerCase() == "k") {
             actionStage[message.guild.id] = 1;
             message.channel.send(":gear: Enter reason for kicking " + getUserString(member) + " or `cancel`.");
@@ -509,14 +517,14 @@ client.on('ready', () => {
     setGame();
     
     //Jump into waiting room
-    client.channels.get("277924441584041985").join().then(function(conn) {
+    client.channels.get(voiceChat).join().then(function(conn) {
         console.log("[STATUS] AstralMod is connected to the waiting room");
         connection = conn;
         playAudio();
     });
     
     //Get all messages in #suggestions
-    client.channels.get("308499752993947649").fetchMessages({
+    client.channels.get(suggestionChat).fetchMessages({
         limit: 100
     });
 });
@@ -684,7 +692,7 @@ function messageChecker(oldMessage, newMessage) {
         }
     }
     
-    if (!isMod(message.member) && msg.indexOf("@everyone") != -1 || msg.indexOf("@here") != -1 && message.guild.id == 277922530973581312) {
+    if (!isMod(message.member) && msg.indexOf("@everyone") != -1 || msg.indexOf("@here") != -1 && message.guild.id == amGuild) {
         message.reply("Nice try... but we disabled that.");
     }
     
@@ -694,7 +702,7 @@ function messageChecker(oldMessage, newMessage) {
     
     if (message.author.id != 280495817901473793 && !message.author.bot) {
         //Server Detection:
-        //AstralPhaser Central: 277922530973581312
+        //AstralPhaser Central: amGuild
         //AKidFromTheUK       : 285740807854751754
 
         if (doModeration[message.guild.id]) { //Check if we should do moderation on this server
@@ -733,7 +741,7 @@ function messageChecker(oldMessage, newMessage) {
                 
                 
                 //Continue only if on AstralPhaser
-                if (message.guild.id == 277922530973581312 && message.channel.id == 308576038324142081) {
+                if (message.guild.id == amGuild && message.channel.id == 308576038324142081) {
                     //Check for links
                     
                     if (message.member != null && !(message.member.roles.find("name", "Patron Tier 5ive") || message.member.roles.find("name", "Patron Tier 2wo") || message.member.roles.find("name", "Patron Tier 3hree") ||message.member.roles.find("name", "Patron Tier 4our"))) {
@@ -836,8 +844,8 @@ function messageChecker(oldMessage, newMessage) {
             //theShell            : 283184634400079872
             if (message.author.id != 282048599574052864 && msg.search(/\b(kys|kill yourself|k-y-s|k y s|k ys|k ys|k i l l yourself|k i l l y o u r s e l f|k-ys|ky-s|kill y o u r s e l f|kill ys|k yourself|killyourself|k y o u r s e l f|k why s|k.y.s.|k-y-s.|ky-s.|k-ys.|k y s.|ky s.|k ys.)\b/i) != -1) {
                 var auth = message.author;
-                if (message.guild.id == 277922530973581312) { //AstralPhaser
-                    client.channels.get("282513354118004747").send(":red_circle: " + getUserString(auth) + " \"kys\" <#" + message.channel.id + ">.");
+                if (message.guild.id == amGuild) { //AstralPhaser
+                    client.channels.get(logChannel).send(":red_circle: " + getUserString(auth) + " \"kys\" <#" + message.channel.id + ">.");
                 } else if (message.guild.id == 278824407743463424) { //theShell {
                     client.channels.get("283184634400079872").send(":red_circle: " + getUserString(auth) + " \"kys\" <#" + message.channel.id + ">.");
                 } else if (message.guild.id == 281066689892974592) { //LE
@@ -992,7 +1000,7 @@ function messageChecker(oldMessage, newMessage) {
                         "                  Reminder to be sent with the message.\n\n";
                     
                     
-                    if (message.guild.id == 277922530973581312) { //APHC specific stuff
+                    if (message.guild.id == amGuild) { //APHC specific stuff
                         helpMessage = helpMessage + "nick name         Change your nickname on this server.\n" +
                         "                  PARAMETER 1\n" +
                         "                  New nickname.\n\n";
@@ -1102,7 +1110,7 @@ function messageChecker(oldMessage, newMessage) {
                     break;
                 case "honeyfry":
                 case "honeyfries":
-                    if (message.guild.id == 277922530973581312) {
+                    if (message.guild.id == amGuild) {
                         message.channel.send('<:honeyfry:291805507428286475> The verdict is YES. GO HONEYFRIES! WOO!\nDon\'t you dare react with a negative emoji Stefan. *I\'m watching you...*');
                     } else {
                         message.channel.send(':no_entry_sign: Honeyfries have nothing to do with this server. Carry on...');
@@ -1142,8 +1150,8 @@ function messageChecker(oldMessage, newMessage) {
                     commandProcessed = true;
                     break;
                 case "suggest":
-                    if (message.guild.id == 277922530973581312 || message.guild.id == 297057036292849680) {
-                        if (message.guild.id == 277922530973581312) {
+                    if (message.guild.id == amGuild || message.guild.id == 297057036292849680) {
+                        if (message.guild.id == amGuild) {
                             if (!message.member.roles.has("278338447335489546") && !isMod(message.member)) {
                                 message.reply(":no_entry_sign: ERROR: Suggestions have been restricted to regulars on this server. Become a regular or speak directly to an admin to suggest something.");
                                 break;
@@ -1331,7 +1339,7 @@ function messageChecker(oldMessage, newMessage) {
                             commandProcessed = true;
                     } else if (command.startsWith("suggest")) {
                             command = command.substr(8);
-                            if (message.guild.id == 277922530973581312) {
+                            if (message.guild.id == amGuild) {
                                 if (!message.member.roles.has("278338447335489546") && !isMod(message.member)) {
                                     message.reply(":no_entry_sign: ERROR: Suggestions have been restricted to regulars on this server. Become a regular or speak directly to an admin to suggest something.");
                                 } else {
@@ -1435,7 +1443,7 @@ function messageChecker(oldMessage, newMessage) {
                             }
                     } else if (command.startsWith("nick")) {
                             command = command.substr(5);
-                            if (message.guild.id == 277922530973581312) {
+                            if (message.guild.id == amGuild) {
 
                                     if (pendingNickTimeout[message.author.id] == null) {
                                             pendingNickTimeout[message.author.id] = new Date().getTime() - 86400000;
@@ -1483,7 +1491,7 @@ function messageChecker(oldMessage, newMessage) {
                 var command = msg.substr(4);
                 switch (command) {
                     case "filter":
-                        if (message.guild.id != 277922530973581312) {
+                        if (message.guild.id != amGuild) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else {
                             if (expletiveFilter) {
@@ -1495,7 +1503,7 @@ function messageChecker(oldMessage, newMessage) {
                         }
                         break;
                     case "filter on":
-                        if (message.guild.id != 277922530973581312) {
+                        if (message.guild.id != amGuild) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else {
                             if (expletiveFilter) {
@@ -1510,7 +1518,7 @@ function messageChecker(oldMessage, newMessage) {
                         }
                         break;
                     case "filter off":
-                        if (message.guild.id != 277922530973581312) {
+                        if (message.guild.id != amGuild) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else {
                             if (expletiveFilter) {
@@ -1576,7 +1584,7 @@ function messageChecker(oldMessage, newMessage) {
                         //fall through
                     case "prepchat":
                         var numberOfMembers = 15;
-                        if (message.guild.id != 277922530973581312) {
+                        if (message.guild.id != amGuild) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else if (!allowPrepChat) {
                             message.reply(':no_entry_sign: ERROR: Command was run less than a minute ago. To override this, use `mod:forceprepchat`');
@@ -1652,7 +1660,7 @@ function messageChecker(oldMessage, newMessage) {
                         }
                         break;
                     case "stopchat":
-                        if (message.guild.id != 277922530973581312) {
+                        if (message.guild.id != amGuild) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else {
                             message.guild.roles.get("328075669080768514").members.forEach(function(cmember) {
@@ -1669,7 +1677,7 @@ function messageChecker(oldMessage, newMessage) {
                             "                  Type on to start moderating the server.\n" +
                             "                  Type off to stop moderating the server.\n\n";
                             
-                        if (message.guild.id == 277922530973581312) { //APHC specific stuff
+                        if (message.guild.id == amGuild) { //APHC specific stuff
                         helpMessage = helpMessage + 
                             "filter [on|off]   Queries the chat filter.\n" +
                             "                  PARAMETER 1 (OPTIONAL)\n" + 
@@ -1725,13 +1733,13 @@ function messageChecker(oldMessage, newMessage) {
                         message.delete();
                         break;
                     case "banterrogate":
-                        if (message.guild.id != 277922530973581312) {
+                        if (message.guild.id != amGuild) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else {
                             if (interrogMember == null) {
                                 message.reply(':no_entry_sign: ERROR: No user to banterrogate. See mod:help for more information.');
                             } else {
-                                if (interrogMember.guild.id == 277922530973581312) {
+                                if (interrogMember.guild.id == amGuild) {
                                     interrogMember.send("You seem to be someone that has been making alts. If you're not, then to appeal, get in touch with vicr123#5096. Sorry about the kick. We've had to do this because of a special someone trying to break the rules.");
                                     interrogMember.ban();
                                     message.channel.send(':white_check_mark: OK: User has been banterrogated!');
@@ -1874,17 +1882,17 @@ function messageChecker(oldMessage, newMessage) {
                                             canDoActions = true;
                                         }
                                         
-                                        if (message.guild.id == 287937616685301762 || message.guild.id == 277922530973581312) {
+                                        if (message.guild.id == 287937616685301762 || message.guild.id == amGuild) {
                                             msg += "`(i)nterrogate` ";
                                             canDoActions = true;
                                         }
                                         
-                                        if (message.guild.id == 277922530973581312 || message.guild.id == 263368501928919040) {
+                                        if (message.guild.id == amGuild || message.guild.id == 263368501928919040) {
                                             msg += "`(j)ail` ";
                                             canDoActions = true;
                                         }
                                         
-                                        if (message.guild.id == 277922530973581312) {
+                                        if (message.guild.id == amGuild) {
                                             msg += "`(m)ute` ";
                                             canDoActions = true;
                                         }
@@ -2022,8 +2030,8 @@ function messageChecker(oldMessage, newMessage) {
             
             if (lastMessages[message.author.id] == msg && sameMessageCount[message.author.id] == 10) {
                 var auth = message.author;
-                if (message.guild.id == 277922530973581312) { //AstralPhaser
-                    client.channels.get("282513354118004747").send(":red_circle: " + getUserString(auth) + " was spamming on " + message.channel.name + ".");
+                if (message.guild.id == amGuild) { //AstralPhaser
+                    client.channels.get(logChannel).send(":red_circle: " + getUserString(auth) + " was spamming on " + message.channel.name + ".");
                 } else if (message.guild.id == 278824407743463424) { //theShell
                     client.channels.get("283184634400079872").send(":red_circle: " + getUserString(auth) + " was spamming on " + message.channel.name + ".");
                 } else if (message.guild.id == 281066689892974592) { //LE
@@ -2061,8 +2069,8 @@ function messageChecker(oldMessage, newMessage) {
                 message.delete();
             } else if (smallMessageCount[message.author.id] == 10) {
                 var auth = message.author;
-                if (message.guild.id == 277922530973581312) { //AstralPhaser
-                    client.channels.get("282513354118004747").send(":red_circle: " + getUserString(auth) + " was spamming on " + message.channel.name + ".");
+                if (message.guild.id == amGuild) { //AstralPhaser
+                    client.channels.get(logChannel).send(":red_circle: " + getUserString(auth) + " was spamming on " + message.channel.name + ".");
                 } else if (message.guild.id == 278824407743463424) { //theShell
                     client.channels.get("283184634400079872").send(":red_circle: " + getUserString(auth) + " was spamming on " + message.channel.name + ".");
                 } else if (message.guild.id == 281066689892974592) { //LE
@@ -2104,10 +2112,10 @@ client.on('message', messageChecker);
 client.on('messageUpdate', messageChecker);
 
 client.on('guildMemberAdd', function(guildMember) {
-    if (guildMember.guild.id == 277922530973581312 || guildMember.guild.id == 278824407743463424 || guildMember.guild.id == 263368501928919040 || guildMember.guild.id == 287937616685301762 || guildMember.guild.id == 305039436490735627) {
+    if (guildMember.guild.id == amGuild || guildMember.guild.id == 278824407743463424 || guildMember.guild.id == 263368501928919040 || guildMember.guild.id == 287937616685301762 || guildMember.guild.id == 305039436490735627) {
         var channel;
-        if (guildMember.guild.id == 277922530973581312) {
-            channel = client.channels.get("284837615830695936");
+        if (guildMember.guild.id == amGuild) {
+            channel = client.channels.get(logChannel);
             console.log("[STATUS] " + getUserString(guildMember) + " --> APHC");
         } else if (guildMember.guild.id == 263368501928919040) {
             channel = client.channels.get("314589053959929866");
@@ -2153,10 +2161,10 @@ client.on('guildMemberAdd', function(guildMember) {
 });
 
 client.on('guildMemberUpdate', function(oldUser, newUser) {
-    if (newUser.guild.id == 277922530973581312) {
-        if (newUser.roles.find("name", "Jailed")) {
+    if (newUser.guild.id == amGuild) {
+        if (newUser.roles.find("name", "Jail")) {
             console.log("[STATUS] " + getUserString(newUser) + " --> JAIL");
-            client.channels.get("277943393231831040").send("<@" + newUser.id + "> :oncoming_police_car: You are now in jail. Appeal here to get out of jail. If you do not appeal successfully within 24 hours, an admin will **ban** you from the server.\n\n" + 
+            client.channels.get(logChannel).send("<@" + newUser.id + "> :oncoming_police_car: You are now in jail. Appeal here to get out of jail. If you do not appeal successfully within 24 hours, an admin will **ban** you from the server.\n\n" + 
             "Additionally, if you leave and rejoin this server in an attempt to break out of jail, you will be **banned.**\n\n" + 
             "Timestamp: " + new Date().toUTCString());
         }
@@ -2168,7 +2176,7 @@ client.on('guildMemberUpdate', function(oldUser, newUser) {
         
         if (newUser.nickname != oldUser.nickname) {
             console.log("[STATUS] " + getUserString(newUser) + " --> N(" + newUser.nickname + ")");
-            var channel = client.channels.get("282513354118004747"); //Bot Warnings
+            var channel = client.channels.get(logChannel); //Bot Warnings
             if (newUser.nickname == null) {
                 channel.send(":abcd: " + getUserString(oldUser) + " :arrow_right: [cleared]");
             } else {
@@ -2186,10 +2194,10 @@ client.on('guildMemberUpdate', function(oldUser, newUser) {
 client.on('userUpdate', function(oldUser, newUser) {
     if (newUser.username != oldUser.username) {
         
-        var aphcGuild = client.channels.get("282513354118004747").guild;
+        var aphcGuild = client.channels.get(logChannel).guild;
         aphcGuild.fetchMember(newUser).then(function(member) {
             console.log("[STATUS] " + getUserString(oldUser) + " --> U(" + newUser.username + ")");
-            var channel = client.channels.get("282513354118004747"); //Admin Bot warnings
+            var channel = client.channels.get(logChannel); //Admin Bot warnings
             channel.send(":ab: " + getUserString(oldUser) + " :arrow_right: " + newUser.username + ". Check spreadsheet!");
         }).catch(function() {
             
@@ -2200,14 +2208,14 @@ client.on('userUpdate', function(oldUser, newUser) {
 client.on('guildMemberRemove', function(user) {
     if (user.roles.find("name", "I Broke The Rules!")) {
             console.log("[STATUS] !!! <-- " + getUserString(user));
-        client.channels.get("277943393231831040").send(":arrow_left: <@" + user.id + "> has left the server in jail.");
+        client.channels.get(logChannel).send(":arrow_left: <@" + user.id + "> has left the server in jail.");
     }
     
     if (user.guild != null) {
-        if (user.guild.id == 277922530973581312 || user.guild.id == 278824407743463424 || user.guild.id == 263368501928919040 || user.guild.id == 287937616685301762 || user.guild.id == 305039436490735627 || guildMember.guild.id == 305039436490735627) {
+        if (user.guild.id == amGuild || user.guild.id == 278824407743463424 || user.guild.id == 263368501928919040 || user.guild.id == 287937616685301762 || user.guild.id == 305039436490735627 || guildMember.guild.id == 305039436490735627) {
             var channel;
-            if (user.guild.id == 277922530973581312) {
-                channel = client.channels.get("284837615830695936");
+            if (user.guild.id == amGuild) {
+                channel = client.channels.get(logChannel);
                 console.log("[STATUS] APHC <-- " + getUserString(user));
             } else if (user.guild.id == 263368501928919040) {
                 channel = client.channels.get("314589053959929866");
@@ -2237,8 +2245,8 @@ client.on('messageDelete', function(message) {
         if (panicMode[message.guild.id]) return; //Don't want to be doing this in panic mode!
         if (message.guild.id == 140241956843290625) return; //Ignore TGL
           
-        if (message.guild.id == 277922530973581312) { //AstralPhaser Central
-            channel = client.channels.get("290439711258968065");
+        if (message.guild.id == amGuild) { //AstralPhaser Central
+            channel = client.channels.get(logChannel);
         } else if (message.guild.id == 278824407743463424) { //theShell
             channel = client.channels.get("290444399731671040");
         } else if (message.guild.id == 287937616685301762) { //WoW
@@ -2288,8 +2296,8 @@ client.on('messageDeleteBulk', function(messages) {
         if (panicMode[messages.first().guild.id]) return; //Don't want to be doing this in panic mode!
         if (messages.first().guild.id == 140241956843290625) return; //Ignore TGL
           
-        if (messages.first().guild.id == 277922530973581312) { //AstralPhaser Central
-            channel = client.channels.get("290439711258968065");
+        if (messages.first().guild.id == amGuild) { //AstralPhaser Central
+            channel = client.channels.get(logChannel);
         } else if (messages.first().guild.id == 278824407743463424) { //theShell
             channel = client.channels.get("290444399731671040");
         } else if (messages.first().guild.id == 287937616685301762) { //WoW
@@ -2320,8 +2328,8 @@ client.on('messageUpdate', function(oldMessage, newMessage) {
     if (oldMessage.cleanContent == newMessage.cleanContent) return; //Ignore
     var channel = null;
     if (oldMessage.guild != null) {
-        if (oldMessage.guild.id == 277922530973581312) { //AstralPhaser Central
-            channel = client.channels.get("290439711258968065");
+        if (oldMessage.guild.id == amGuild) { //AstralPhaser Central
+            channel = client.channels.get(logChannel);
         } else if (oldMessage.guild.id == 278824407743463424) { //theShell
             channel = client.channels.get("290444399731671040");
         } else if (oldMessage.guild.id == 287937616685301762) { //WoW
@@ -2372,10 +2380,10 @@ client.on('messageUpdate', function(oldMessage, newMessage) {
 });
 
 client.on("guildBanAdd", function(guild, user) {
-    if (guild.id == 277922530973581312) {
+    if (guild.id == amGuild) {
         var channel;
         console.log("[STATUS] " + getUserString(user) + " --> BAN");
-        channel = client.channels.get("284837615830695936");
+        channel = client.channels.get(logChannel);
         channel.send(":red_circle: " + user.username + " :hammer: ¯\\_(ツ)_/¯ :hammer:");
     }
 });
