@@ -1026,6 +1026,7 @@ function messageChecker(oldMessage, newMessage) {
                         "warranty          Tells you about AstralMod\n\n" + 
                         "ping|pong         Asks AstralMod to reply with a message\n\n" +
                         "These commands need to be prefixed with bot:\n" +
+                        "This help command is deprecated please use bot:help or mod:help...\n" +
                         "```";
                     message.channel.send(helpMessage);
                     break;
