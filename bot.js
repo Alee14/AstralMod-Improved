@@ -50,12 +50,14 @@ var actioningMember = {};
 var actionStage = {};
 var actionToPerform = {};
 
-var amGuild = "277922530973581312";
-var logChannel = "318874545593384970";
-var voiceChat = "261302767811952641";
-var suggestionChat = "427495678390960148";
-var jailRole = "";
-var interrogationRole = "";
+// This is going to be temporary.
+
+const amGuild = "243022206437687296";
+const logChannel = "318874545593384970";
+const voiceChat = "261302767811952641";
+const suggestionChat = "427495678390960148";
+const jailRole = "";
+const interrogationRole = "";
 
 var dispatcher;
 var connection;
@@ -988,6 +990,17 @@ function messageChecker(oldMessage, newMessage) {
                     commandProcessed = true;
                     break;
                 case "help":
+                    const embed = new Discord.RichEmbed();
+                    embed.setTitle('AstralMod ' + amVersion + ' Help')
+                    embed.setDescription("Here are some things you can try. My prefix is either `mod:` or `bot:`\nAdmin only commands depicted by *italics*")
+                    embed.addField("Normal", "time\nclock\nnick\nsuggest\nabout\ncopyright\nlicense\nwarranty\nping\npong", true)
+                    embed.addField("Mod Only", "mod [on|off]\nfilter [on|off]\nprepchat\ndeal\nrm\nuinfo\nrtid\nclock\n*panic*\ncancel\nhelp", true)
+                    embed.setColor(0xfceb00)
+                    embed.setFooter('AstralMod ' + amVersion + ' Copyright 2018, Made by vicr123 and modded by Alee.')
+                    commandProcessed = true;
+                    message.channel.send({embed});
+                break;
+                case "oldhelp":
                     var helpMessage = "Here are some things you can try:\n```\n" +
                         "time   [tz]       Gets the time at UTC +00:00.\n" + 
                         "                  Useful for checking jail time.\n" +
@@ -1732,7 +1745,7 @@ function messageChecker(oldMessage, newMessage) {
                         }
                         message.delete();
                         break;
-                    case "banterrogate":
+                        case "banterrogate":
                         if (message.guild.id != amGuild) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else {
@@ -1891,7 +1904,7 @@ function messageChecker(oldMessage, newMessage) {
                                             msg += "`(j)ail` ";
                                             canDoActions = true;
                                         }
-                                        
+                                                                             
                                         if (message.guild.id == amGuild) {
                                             msg += "`(m)ute` ";
                                             canDoActions = true;
@@ -2130,7 +2143,6 @@ client.on('guildMemberAdd', function(guildMember) {
             channel = client.channels.get("320422079130238980");
             console.log("[STATUS] " + getUserString(guildMember) + " --> ts");
         }
-        interrogMember = guildMember;
         
         channel.send(":arrow_right: <@" + guildMember.user.id + ">");
         
@@ -2162,18 +2174,6 @@ client.on('guildMemberAdd', function(guildMember) {
 
 client.on('guildMemberUpdate', function(oldUser, newUser) {
     if (newUser.guild.id == amGuild) {
-        if (newUser.roles.find("name", "Jail")) {
-            console.log("[STATUS] " + getUserString(newUser) + " --> JAIL");
-            client.channels.get(logChannel).send("<@" + newUser.id + "> :oncoming_police_car: You are now in jail. Appeal here to get out of jail. If you do not appeal successfully within 24 hours, an admin will **ban** you from the server.\n\n" + 
-            "Additionally, if you leave and rejoin this server in an attempt to break out of jail, you will be **banned.**\n\n" + 
-            "Timestamp: " + new Date().toUTCString());
-        }
-        
-        if (newUser.roles.find("name", "Interrogation")) {
-            console.log("[STATUS] " + getUserString(newUser) + " --> INTERROGATION APHC");
-            client.channels.get("292630922040311808").send("<@" + newUser.id + "> :oncoming_police_car: A member of staff just wishes to make sure you're not someone we've banned before. If you have any social media accounts, just tell us so we can see that you're not someone that we've banned :)");
-        }
-        
         if (newUser.nickname != oldUser.nickname) {
             console.log("[STATUS] " + getUserString(newUser) + " --> N(" + newUser.nickname + ")");
             var channel = client.channels.get(logChannel); //Bot Warnings
@@ -2182,11 +2182,6 @@ client.on('guildMemberUpdate', function(oldUser, newUser) {
             } else {
                 channel.send(":abcd: " + getUserString(oldUser) + " :arrow_right: " + newUser.nickname);
             }
-        }
-    } else if (newUser.guild.id == 287937616685301762) {
-        if (newUser.roles.find("name", "interrogation")) {
-            console.log("[STATUS] " + getUserString(newUser) + " --> INTERROGATION WOW");
-            client.channels.get("319848725566586890").send("<@" + newUser.id + "> :oncoming_police_car: A member of staff just wishes to make sure you're not someone we've banned before. :)");
         }
     }
 });
@@ -2206,10 +2201,6 @@ client.on('userUpdate', function(oldUser, newUser) {
 });
 
 client.on('guildMemberRemove', function(user) {
-    if (user.roles.find("name", "I Broke The Rules!")) {
-            console.log("[STATUS] !!! <-- " + getUserString(user));
-        client.channels.get(logChannel).send(":arrow_left: <@" + user.id + "> has left the server in jail.");
-    }
     
     if (user.guild != null) {
         if (user.guild.id == amGuild || user.guild.id == 278824407743463424 || user.guild.id == 263368501928919040 || user.guild.id == 287937616685301762 || user.guild.id == 305039436490735627 || guildMember.guild.id == 305039436490735627) {
