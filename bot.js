@@ -1,7 +1,7 @@
 /****************************************
  * 
  *   AstralMod Improved: An improved version of AstralMod 1.0.
- *   Copyright (C) 2018 Victor Tran, Rylan Arbour and AleeCorp
+ *   Copyright (C) 2018 AleeCorp, Victor Tran and Rylan Arbour
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ const suggestionStartMessage =  "**Make a suggestion**\n" +
                                 "- Any misuse of this command, including (but not limited to) spam will lead to appropriate discipline from staff.\n\n" +
                                 "**Here are some things not to suggest because they will be immediately declined.** This counts as misuse of the suggest command, so hit `q` now if you were going to suggest one of these.\n" +
                                 "- New text/voice channels.\n" +
-                                "- Anything to do with AstralMod. For that, head to <https://github.com/vicr123/AstralMod> and file a bug report.\n" +
+                                "- Anything to do with AstralMod. For that, head to <https://github.com/AleeCorp/AstralMod-Improved> and file a bug report.\n" +
                                 "- New bots.\n\n" +
                                 "Wait 30 seconds, and then respond with `y` if you understood the above."
 
@@ -507,23 +507,23 @@ function handleAction(message) {
     }
     actionMember[message.guild.id] = member;
 }
-
+/*
 function playAudio() {
     dispatcher = connection.playFile("forecastvoice.mp3");
     dispatcher.on('end', playAudio);
 }
-
+*/
 client.on('ready', () => {
     console.log("[STATUS] AstralMod " + amVersion + " - locked and loaded!");
     client.setInterval(setGame, 300000);
     setGame();
-    
+    /*
     //Jump into waiting room
     client.channels.get(voiceChat).join().then(function(conn) {
         console.log("[STATUS] AstralMod is connected to the waiting room");
         connection = conn;
         playAudio();
-    });
+    }); */
     
     //Get all messages in #suggestions
     client.channels.get(suggestionChat).fetchMessages({
@@ -1033,14 +1033,14 @@ function messageChecker(oldMessage, newMessage) {
                 case "about":
                 case "license":
                     message.author.send(
-                        "AstralMod " + amVersion + " - Copyright © Victor Tran and Rylan Arbour 2017. Licensed under the GNU General Public License, version 3 (or any later version). For more info, type in bot:copyright in a channel with AstralMod.\n" +
-                        "https://github.com/vicr123/AstralMod"
+                        "AstralMod " + amVersion + " - Copyright © AleeCorp, Victor Tran and Rylan Arbour 2018. Licensed under the GNU General Public License, version 3 (or any later version). For more info, type in bot:copyright in a channel with AstralMod.\n" +
+                        "https://github.com/AleeCorp/AstralMod-Improved"
                     );
                     commandProcessed = true;
                     break;
                 case "copyright":
                     message.author.send(
-                        "Copyright (C) 2017 Victor Tran and Rylan Arbour\n\n" +
+                        "Copyright (C) 2017 AleeCorp, Victor Tran and Rylan Arbour\n\n" +
 
                         "This program is free software: you can redistribute it and/or modify\n" +
                         "it under the terms of the GNU General Public License as published by\n" +
@@ -1165,12 +1165,6 @@ function messageChecker(oldMessage, newMessage) {
                     break;
                 case "suggest":
                     if (message.guild.id == amGuild || message.guild.id == 297057036292849680) {
-                        if (message.guild.id == amGuild) {
-                            if (!message.member.roles.has("278338447335489546") && !isMod(message.member)) {
-                                message.reply(":no_entry_sign: ERROR: Suggestions have been restricted to regulars on this server. Become a regular or speak directly to an admin to suggest something.");
-                                break;
-                            }
-                        }
                         
                         suggestStates[message.author.id] = {};
                         suggestStates[message.author.id].state = 1;
@@ -1981,7 +1975,7 @@ function messageChecker(oldMessage, newMessage) {
                 }
                 
                 if (command == "poweroff") {
-                    if (message.author.id == 278805875978928128 || message.author.id == 241299743869894667 || message.author.id == 113060599566508032) {
+                    if (message.author.id == 242775871059001344 || message.author.id == 241299743869894667 || message.author.id == 113060599566508032) {
                         if (poweroff) {
                             switch (Math.floor(Math.random() * 1000) % 3) {
                                 case 0:
