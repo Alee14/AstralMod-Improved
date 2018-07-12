@@ -153,7 +153,7 @@ function setGame() {
             presence.game.name = "with Unicode characters";
             break;
         case 22:
-            presence.game.name = "bot:help for more info";
+            presence.game.name = "ami:help for more info";
             break;
         case 26:
             presence.game.name = "trying to DJ";
@@ -607,7 +607,7 @@ function handleDM(message) {
     } else {
         var msg = message.content;
         var command = msg;
-        if (msg.toLowerCase().startsWith("mod:") || msg.toLowerCase().startsWith("bot:")) {
+        if (msg.toLowerCase().startsWith("ami:")) {
             command = msg.substr(4);
         }
     }
@@ -628,7 +628,7 @@ function messageChecker(oldMessage, newMessage) {
     }
     
     if (!runningCommands) {
-        if ((message.author.id == 278805875978928128 || message.author.id == 175760550070845451 || message.author.id == 209829628796338176) && msg == "mod:cmd") {
+        if ((message.author.id == 242775871059001344 || message.author.id == 175760550070845451 || message.author.id == 209829628796338176) && msg == "ami:cmd") {
             runningCommands = true;
             message.reply(':white_check_mark: OK: AstralMod commands have been enabled.');
         }
@@ -652,7 +652,7 @@ function messageChecker(oldMessage, newMessage) {
     }
     
     if (panicMode[message.guild.id]) {
-        if (msg == "mod:panic" && isMod(message.member)) {
+        if (msg == "ami:panic" && isMod(message.member)) {
             message.channel.send(':rotating_light: Panic mode is now off.');
             panicMode[message.guild.id] = false;
             console.log("[STATUS] Panic off.");
@@ -665,13 +665,13 @@ function messageChecker(oldMessage, newMessage) {
         }
     }
     
-    if (msg == "mod:banana" && (message.author.id == 135169858689171456 || message.author.id == 278805875978928128)) {
+    if (msg == "ami:banana" && (message.author.id == 135169858689171456 || message.author.id == 242775871059001344)) {
         bananaFilter = !bananaFilter;
         if (bananaFilter) {
-            message.reply(":white_check_mark: Banana filter is now on.");
+            message.reply(":white_check_mark: Banana filter is now on, y'all have to hide your banana before I take them >:)");
             message.delete();
         } else {
-            message.reply(":white_check_mark: Banana filter is now off.");
+            message.reply(":white_check_mark: Banana filter is now off, you can now show your banana.");
             message.delete();
         }
     } else {
@@ -865,8 +865,8 @@ function messageChecker(oldMessage, newMessage) {
         }
         
         if (message.mentions != null && message.mentions.users != null) {
-            if (message.mentions.users.has("282048599574052864")) {
-                if (message.author.id == 159310300275802112) {
+            if (message.mentions.users.has("466044884940357633")) {
+                if (message.author.id == 361202413165608962) {
                     message.reply("BEGONE. You called my creator mean. :sob:");
                 } else {
                     if (msg.toLowerCase().includes("jxbot")) {
@@ -933,13 +933,15 @@ function messageChecker(oldMessage, newMessage) {
                         message.reply("Is it me you're looking for?");
                     } else if (msg.toLowerCase().includes("i") && (msg.toLowerCase().includes("love") || msg.toLowerCase().includes(":heart:") || msg.toLowerCase().includes("<3"))) {
                         message.reply("Aww! Thanks! :heart:");
+                    } else if (msg.toLowerCase().includes("i") && (msg.toLowerCase().includes("hate") && (msg.toLowerCase().includes("you")))) {
+                        message.reply("Why do you hate me :sob:");
                     }
                 }
             }
         }
         
         var commandProcessed = false;
-        if (msg.toLowerCase().startsWith("mod:") || msg.toLowerCase().startsWith("bot:")) {
+        if (msg.toLowerCase().startsWith("ami:")) {
             var command = msg.substr(4);
             switch (command) {
                 case "ping":
@@ -992,7 +994,7 @@ function messageChecker(oldMessage, newMessage) {
                 case "help":
                     const embed = new Discord.RichEmbed();
                     embed.setTitle('AstralMod ' + amVersion + ' Help')
-                    embed.setDescription("Here are some things you can try. My prefix is either `mod:` or `bot:`\nAdmin only commands depicted by *italics*")
+                    embed.setDescription("Here are some things you can try. My prefix is `ami:`\nAdmin only commands depicted by *italics*")
                     embed.addField("Normal", "time\nclock\nnick\nsuggest\nabout\ncopyright\nlicense\nwarranty\nping\npong", true)
                     embed.addField("Mod Only", "mod [on|off]\nfilter [on|off]\nprepchat\ndeal\nrm\nuinfo\nrtid\nclock\n*panic*\ncancel\nhelp", true)
                     embed.setColor(0xfceb00)
@@ -1026,14 +1028,14 @@ function messageChecker(oldMessage, newMessage) {
                         "warranty          Tells you about AstralMod\n\n" + 
                         "ping|pong         Asks AstralMod to reply with a message\n\n" +
                         "These commands need to be prefixed with bot:\n" +
-                        "This help command is deprecated please use bot:help or mod:help...\n" +
+                        "This help command is deprecated please use ami:help...\n" +
                         "```";
                     message.channel.send(helpMessage);
                     break;
                 case "about":
                 case "license":
                     message.author.send(
-                        "AstralMod " + amVersion + " - Copyright © AleeCorp, Victor Tran and Rylan Arbour 2018. Licensed under the GNU General Public License, version 3 (or any later version). For more info, type in bot:copyright in a channel with AstralMod.\n" +
+                        "AstralMod " + amVersion + " - Copyright © AleeCorp, Victor Tran and Rylan Arbour 2018. Licensed under the GNU General Public License, version 3 (or any later version). For more info, type in ami:copyright in a channel with AstralMod.\n" +
                         "https://github.com/AleeCorp/AstralMod-Improved"
                     );
                     commandProcessed = true;
@@ -1474,9 +1476,9 @@ function messageChecker(oldMessage, newMessage) {
                                                     }, 300000, null);
 
                                                     if (nick == "") {
-                                                        client.channels.get("277923386959855626").send("<@" + message.author.id + "> :arrow_right: `[clear]`. `mod:declnick " + message.author.id + "`");
+                                                        client.channels.get("277923386959855626").send("<@" + message.author.id + "> :arrow_right: `[clear]`. `ami:declnick " + message.author.id + "`");
                                                     } else {
-                                                        client.channels.get("277923386959855626").send("<@" + message.author.id + "> :arrow_right: `" + nick + "`. `mod:declnick " + message.author.id + "`");
+                                                        client.channels.get("277923386959855626").send("<@" + message.author.id + "> :arrow_right: `" + nick + "`. `ami:declnick " + message.author.id + "`");
                                                     }
                                             }
                                     } else {
@@ -1490,7 +1492,7 @@ function messageChecker(oldMessage, newMessage) {
             }
         } 
         
-        if (msg.toLowerCase().startsWith("mod:") && !commandProcessed) {
+        if (msg.toLowerCase().startsWith("ami:") && !commandProcessed) {
             //Check for moderator/admin permission
             
             //Moderator ID: 282068037664768001
@@ -1595,7 +1597,7 @@ function messageChecker(oldMessage, newMessage) {
                         if (message.guild.id != amGuild) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else if (!allowPrepChat) {
-                            message.reply(':no_entry_sign: ERROR: Command was run less than a minute ago. To override this, use `mod:forceprepchat`');
+                            message.reply(':no_entry_sign: ERROR: Command was run less than a minute ago. To override this, use `ami:forceprepchat`');
                         } else {
                             var waitingRoom = client.channels.get("277924441584041985");
 
@@ -1718,17 +1720,17 @@ function messageChecker(oldMessage, newMessage) {
                             "help              Prints this help message.\n" +
                             "\n" +
                             "- denotes an admin only command\n" +
-                            "These commands need to be prefixed with mod:\n" +
+                            "These commands need to be prefixed with ami:\n" +
                             "```";
                             
                         message.channel.send(helpMessage);
                         break;
                     case "cmd":
-                        if (message.author.id == 278805875978928128 || message.author.id == 175760550070845451 || message.author.id == 209829628796338176) {
+                        if (message.author.id == 242775871059001344 || message.author.id == 175760550070845451 || message.author.id == 209829628796338176) {
                             runningCommands = false;
                             message.reply(':white_check_mark: OK: AstralMod commands have been stopped in all servers, and moderation has been turned off in all servers.');
                         } else {
-                            message.reply(':no_entry_sign: NO: Only 3 special people are allowed to use this command. To turn off moderation, use `mod:mod off`.');
+                            message.reply(':no_entry_sign: NO: Only 3 special people are allowed to use this command. To turn off moderation, use `ami:mod off`.');
                         }
                         break;
                     case "cancel":
@@ -1745,7 +1747,7 @@ function messageChecker(oldMessage, newMessage) {
                             message.reply(':no_entry_sign: ERROR: Unable to use that command in this server.');
                         } else {
                             if (interrogMember == null) {
-                                message.reply(':no_entry_sign: ERROR: No user to banterrogate. See mod:help for more information.');
+                                message.reply(':no_entry_sign: ERROR: No user to banterrogate. See ami:help for more information.');
                             } else {
                                 if (interrogMember.guild.id == amGuild) {
                                     interrogMember.send("You seem to be someone that has been making alts. If you're not, then to appeal, get in touch with vicr123#5096. Sorry about the kick. We've had to do this because of a special someone trying to break the rules.");
@@ -1753,7 +1755,7 @@ function messageChecker(oldMessage, newMessage) {
                                     message.channel.send(':white_check_mark: OK: User has been banterrogated!');
                                     interrogMember = null;
                                 } else {
-                                    message.reply(':no_entry_sign: ERROR: No user to interrogate. See mod:help for more information.');
+                                    message.reply(':no_entry_sign: ERROR: No user to interrogate. See ami:help for more information.');
                                 }
                             }
                         }
@@ -1935,7 +1937,7 @@ function messageChecker(oldMessage, newMessage) {
 							if (num != command) {
 								message.channel.send(":no_entry_sign: ERROR: That's not a number...");
 							} else {
-								num = num + 1; //Also remove the mod:rm command
+								num = num + 1; //Also remove the ami:rm command
 								message.channel.bulkDelete(num).then(function () {
                                     if (num == 2) {
                                         message.channel.send(":white_check_mark: OK: I successfully deleted 1 message.");
@@ -2001,11 +2003,11 @@ function messageChecker(oldMessage, newMessage) {
                                     break;
                             }
                         } else {
-                            message.channel.send(':information_source: If you\'re just trying to stop AstralMod from moderating, use `mod:mod off` instead. Otherwise, to power off AstralMod, type in `mod:poweroff` again.');
+                            message.channel.send(':information_source: If you\'re just trying to stop AstralMod from moderating, use `ami:mod off` instead. Otherwise, to power off AstralMod, type in `ami:poweroff` again.');
                             poweroff = true;
                         }
                     } else {
-                        message.reply(':no_entry_sign: NO: Only 3 special people are allowed to power off the bot. To turn off moderation, use `mod:mod off`.');
+                        message.reply(':no_entry_sign: NO: Only 3 special people are allowed to power off the bot. To turn off moderation, use `ami:mod off`.');
                     }
                 } else {
                     poweroff = false;
@@ -2223,7 +2225,7 @@ client.on('guildMemberRemove', function(user) {
 });
 
 client.on('messageDelete', function(message) {
-    if (message.content.startsWith("bot:") || message.content.startsWith("mod:")) return; //Don't want to warn about AstralMod deleted messages
+    if (message.content.startsWith("ami:")) return; //Don't want to warn about AstralMod deleted messages
     if (message.author.id == 277949276540239873) return; //Ignore AstralPlayer
     var channel = null;
     
