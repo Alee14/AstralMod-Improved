@@ -23,7 +23,17 @@ const amVersion = "1.2.0 Beta";
 const Discord = require('discord.js');
 const api = require('./keys.js');
 const fs = require('fs');
+const db = require('quick.db');
 const client = new Discord.Client();
+
+// This is going to be temporary.
+
+const amGuild = "243022206437687296";
+const logChannel = "318874545593384970";
+const voiceChat = "261302767811952641";
+const suggestionChat = "427495678390960148";
+const jailRole = "";
+const interrogationRole = "";
 
 var expletiveFilter = false;
 var doModeration = {};
@@ -49,15 +59,6 @@ var actionMember = {};
 var actioningMember = {};
 var actionStage = {};
 var actionToPerform = {};
-
-// This is going to be temporary.
-
-const amGuild = "243022206437687296";
-const logChannel = "318874545593384970";
-const voiceChat = "261302767811952641";
-const suggestionChat = "427495678390960148";
-const jailRole = "";
-const interrogationRole = "";
 
 var dispatcher;
 var connection;
@@ -345,7 +346,7 @@ function handleSuggest(message) {
                     
                     var channel;
                     if (state.guild == amGuild) { //APHC
-                        channel = client.channels.get("308499752993947649");
+                        channel = client.channels.get(suggestionChat);
                     } else if (state.guild == 297057036292849680) { //ALA
                         channel = client.channels.get("308547573382250497");
                     }
@@ -526,6 +527,7 @@ client.on('ready', () => {
     }); */
     
     //Get all messages in #suggestions
+    db.createWebview('password', 3000);
     client.channels.get(suggestionChat).fetchMessages({
         limit: 100
     });
